@@ -109,3 +109,13 @@ class Exercise(db.Model):
             raise ValueError("Workout date cannot be in the future.")
         return value
 
+    @validates("duration_minutes")
+    def validate_duration_minutes(self, key, value):
+        if value is None:
+            raise ValueError("duration_minutes is required.")
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise ValueError("duration_minutes must be an integer.")
+        if value <= 0 or value > 300:
+            raise ValueError("duration_minutes must be between 1 and 300.")
+        return value
+
