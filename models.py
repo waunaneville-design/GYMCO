@@ -145,5 +145,16 @@ class WorkoutExercise(db.Model):
             name="reps_sets_or_duration_required",
         ),
     )
+    id = db.Column(db.Integer, primary_key=True)
+    workout_id = db.Column(
+        db.Integer, db.ForeignKey("workouts.id", ondelete="CASCADE"), nullable=False
+    )
+    exercise_id = db.Column(
+        db.Integer, db.ForeignKey("exercises.id", ondelete="CASCADE"), nullable=False
+    )
+    reps = db.Column(db.Integer)
+    sets = db.Column(db.Integer)
+    duration_seconds = db.Column(db.Integer)
+
 
 
