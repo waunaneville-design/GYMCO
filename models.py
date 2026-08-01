@@ -128,4 +128,22 @@ class Exercise(db.Model):
     def __repr__(self):
         return f"<Workout {self.id}: {self.date} ({self.duration_minutes} min)>"
 
+class WorkoutExercise(db.Model):
+    __tablename__ = "workout_exercises"
+    __table_args__ = (
+        UniqueConstraint(
+            "workout_id", "exercise_id", name="uq_workout_exercises_workout_id"
+        ),
+        CheckConstraint("reps IS NULL OR reps > 0", name="reps_positive"),
+        CheckConstraint("sets IS NULL OR sets > 0", name="sets_positive"),
+        CheckConstraint(
+            "duration_seconds IS NULL OR duration_seconds > 0",
+            name="duration_seconds_positive",
+        ),
+        CheckConstraint(
+            "(reps IS NOT NULL AND sets IS NOT NULL) OR duration_seconds IS NOT NULL",
+            name="reps_sets_or_duration_required",
+        ),
+    )
+
 
