@@ -71,3 +71,30 @@ class WorkoutExerciseSchema(SQLAlchemyAutoSchema):
                 "Provide either both reps and sets, or duration_seconds.",
                 "reps",
 
+         )
+
+
+class WorkoutExerciseDetailSchema(WorkoutExerciseSchema):
+    """A WorkoutExercise nested inside a Workout, including the exercise."""
+
+    exercise = fields.Nested(ExerciseSchema, dump_only=True)
+
+
+class WorkoutExerciseWithWorkoutSchema(WorkoutExerciseSchema):
+    """A WorkoutExercise nested inside an Exercise, including the workout."""
+
+    workout = fields.Nested(WorkoutSchema, dump_only=True)
+
+
+class WorkoutDetailSchema(WorkoutSchema):
+    exercises = fields.Nested(ExerciseSchema, many=True, dump_only=True)
+    workout_exercises = fields.Nested(
+        WorkoutExerciseDetailSchema, many=True, dump_only=True
+    )
+
+
+class ExerciseDetailSchema(ExerciseSchema):
+    workouts = fields.Nested(WorkoutSchema, many=True, dump_only=True)
+    workout_exercises = fields.Nested(
+        WorkoutExerciseWithWorkoutSchema, many=True, dump_only=True
+    )
