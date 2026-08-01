@@ -20,3 +20,10 @@ class ExerciseSchema(SQLAlchemyAutoSchema):
         validate=validate.OneOf(EXERCISE_CATEGORIES, error="Invalid category: {input}."),
     )
     equipment_needed = fields.Boolean(load_default=False)
+
+
+    @validates("name")
+    def validate_name(self, value, **kwargs):
+        if not value.strip():
+            raise ValidationError("Name cannot be blank.")
+
