@@ -119,3 +119,13 @@ class Exercise(db.Model):
             raise ValueError("duration_minutes must be between 1 and 300.")
         return value
 
+    @validates("notes")
+    def validate_notes(self, key, value):
+        if value is not None and len(value) > 500:
+            raise ValueError("notes must be 500 characters or fewer.")
+        return value
+
+    def __repr__(self):
+        return f"<Workout {self.id}: {self.date} ({self.duration_minutes} min)>"
+
+
