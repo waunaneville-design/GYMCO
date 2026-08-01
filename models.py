@@ -28,3 +28,21 @@ class Exercise(db.Model):
         ),
     )
 
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False, unique=True)
+    category = db.Column(db.String(40), nullable=False)
+    equipment_needed = db.Column(db.Boolean, nullable=False, default=False)
+
+    workout_exercises = db.relationship(
+        "WorkoutExercise",
+        back_populates="exercise",
+        cascade="all, delete-orphan",
+    )
+    workouts = db.relationship(
+        "Workout",
+        secondary="workout_exercises",
+        back_populates="exercises",
+        viewonly=True,
+    )
+
