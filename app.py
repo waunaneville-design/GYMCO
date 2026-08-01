@@ -43,3 +43,7 @@ def create_app(config_class=Config):
     register_error_handlers(app)
     return app
 
+def register_error_handlers(app):
+    @app.errorhandler(ValidationError)
+    def handle_validation_error(error):
+        return jsonify({"errors": error.messages}), 400
