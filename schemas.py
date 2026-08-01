@@ -48,4 +48,19 @@ class WorkoutSchema(SQLAlchemyAutoSchema):
         if value > date.today():
             raise ValidationError("Workout date cannot be in the future.")
 
+class WorkoutExerciseSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = WorkoutExercise
+        load_instance = False
+        sqla_session = db.session
+        include_fk = True
+
+    id = auto_field(dump_only=True)
+    workout_id = fields.Integer(dump_only=True)
+    exercise_id = fields.Integer(dump_only=True)
+    reps = fields.Integer(allow_none=True, load_default=None, validate=validate.Range(min=1))
+    sets = fields.Integer(allow_none=True, load_default=None, validate=validate.Range(min=1))
+    duration_seconds = fields.Integer(
+        allow_none=True, load_default=None, validate=validate.Range(min=1)
+    )
 
