@@ -19,3 +19,23 @@ def seed():
     lunge = Exercise(name="Walking Lunge", category="mobility", equipment_needed=False)
     db.session.add_all([squat, pushup, row, plank, lunge])
     db.session.commit()
+
+
+    print("Seeding workouts...")
+    today = date.today()
+    leg_day = Workout(
+        date=today, duration_minutes=60, notes="Heavy lower body session."
+    )
+    conditioning = Workout(
+        date=today - timedelta(days=2),
+        duration_minutes=35,
+        notes="Cardio and core circuit.",
+    )
+    recovery = Workout(
+        date=today - timedelta(days=5),
+        duration_minutes=25,
+        notes="Light mobility work.",
+    )
+    db.session.add_all([leg_day, conditioning, recovery])
+    db.session.commit()
+
