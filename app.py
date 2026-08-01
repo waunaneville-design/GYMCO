@@ -146,3 +146,11 @@ def register_routes(app):
         db.session.delete(exercise)
         db.session.commit()
         return "", 204
+
+     # ----- Workout exercises (join records) -----
+
+    @app.post("/workouts/<int:workout_id>/exercises/<int:exercise_id>/workout_exercises")
+    def add_exercise_to_workout(workout_id, exercise_id):
+        workout = db.session.get(Workout, workout_id)
+        if workout is None:
+            return jsonify({"error": "Workout not found"}), 404
