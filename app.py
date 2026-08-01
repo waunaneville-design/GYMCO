@@ -43,6 +43,7 @@ def create_app(config_class=Config):
     register_error_handlers(app)
     return app
 
+
 def register_error_handlers(app):
     @app.errorhandler(ValidationError)
     def handle_validation_error(error):
@@ -56,12 +57,13 @@ def register_error_handlers(app):
     def handle_method_not_allowed(error):
         return jsonify({"error": "Method not allowed"}), 405
 
+
 def register_routes(app):
     @app.get("/")
     def index():
         return jsonify({"message": "GYMCO workout API"}), 200
 
- # ----- Workouts -----
+    # ----- Workouts -----
 
     @app.get("/workouts")
     def get_workouts():
@@ -104,7 +106,7 @@ def register_routes(app):
         db.session.commit()
         return "", 204
 
- # ----- Exercises -----
+    # ----- Exercises -----
 
     @app.get("/exercises")
     def get_exercises():
@@ -147,7 +149,7 @@ def register_routes(app):
         db.session.commit()
         return "", 204
 
-     # ----- Workout exercises (join records) -----
+    # ----- Workout exercises (join records) -----
 
     @app.post("/workouts/<int:workout_id>/exercises/<int:exercise_id>/workout_exercises")
     def add_exercise_to_workout(workout_id, exercise_id):
@@ -167,7 +169,6 @@ def register_routes(app):
         workout_exercise = WorkoutExercise(
             workout_id=workout_id, exercise_id=exercise_id, **data
         )
-
         try:
             db.session.add(workout_exercise)
             db.session.commit()
@@ -186,4 +187,3 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
-

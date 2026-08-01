@@ -1,4 +1,5 @@
 from datetime import date
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import CheckConstraint, MetaData, UniqueConstraint, event
 from sqlalchemy.orm import validates

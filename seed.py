@@ -20,7 +20,6 @@ def seed():
     db.session.add_all([squat, pushup, row, plank, lunge])
     db.session.commit()
 
-
     print("Seeding workouts...")
     today = date.today()
     leg_day = Workout(

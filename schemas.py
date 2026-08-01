@@ -21,11 +21,11 @@ class ExerciseSchema(SQLAlchemyAutoSchema):
     )
     equipment_needed = fields.Boolean(load_default=False)
 
-
     @validates("name")
     def validate_name(self, value, **kwargs):
         if not value.strip():
             raise ValidationError("Name cannot be blank.")
+
 
 class WorkoutSchema(SQLAlchemyAutoSchema):
     class Meta:
@@ -48,6 +48,7 @@ class WorkoutSchema(SQLAlchemyAutoSchema):
         if value > date.today():
             raise ValidationError("Workout date cannot be in the future.")
 
+
 class WorkoutExerciseSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = WorkoutExercise
@@ -63,6 +64,7 @@ class WorkoutExerciseSchema(SQLAlchemyAutoSchema):
     duration_seconds = fields.Integer(
         allow_none=True, load_default=None, validate=validate.Range(min=1)
     )
+
     @validates_schema
     def validate_effort(self, data, **kwargs):
         has_reps_and_sets = data.get("reps") is not None and data.get("sets") is not None
@@ -70,8 +72,7 @@ class WorkoutExerciseSchema(SQLAlchemyAutoSchema):
             raise ValidationError(
                 "Provide either both reps and sets, or duration_seconds.",
                 "reps",
-
-         )
+            )
 
 
 class WorkoutExerciseDetailSchema(WorkoutExerciseSchema):
