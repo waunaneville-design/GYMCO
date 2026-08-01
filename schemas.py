@@ -98,3 +98,13 @@ class ExerciseDetailSchema(ExerciseSchema):
     workout_exercises = fields.Nested(
         WorkoutExerciseWithWorkoutSchema, many=True, dump_only=True
     )
+
+
+exercise_schema = ExerciseSchema()
+exercises_schema = ExerciseSchema(many=True)
+exercise_detail_schema = ExerciseDetailSchema()
+workout_schema = WorkoutSchema()
+workouts_schema = WorkoutSchema(many=True)
+workout_detail_schema = WorkoutDetailSchema()
+workout_exercise_schema = WorkoutExerciseSchema()
+workout_exercise_detail_schema = WorkoutExerciseDetailSchema()
