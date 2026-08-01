@@ -39,3 +39,22 @@ def seed():
     db.session.add_all([leg_day, conditioning, recovery])
     db.session.commit()
 
+    print("Seeding workout exercises...")
+    db.session.add_all(
+        [
+            WorkoutExercise(workout=leg_day, exercise=squat, reps=8, sets=5),
+            WorkoutExercise(workout=leg_day, exercise=lunge, reps=12, sets=3),
+            WorkoutExercise(workout=conditioning, exercise=row, duration_seconds=900),
+            WorkoutExercise(workout=conditioning, exercise=plank, duration_seconds=120),
+            WorkoutExercise(workout=conditioning, exercise=pushup, reps=15, sets=3),
+            WorkoutExercise(workout=recovery, exercise=lunge, reps=10, sets=2),
+        ]
+    )
+    db.session.commit()
+    print("Done seeding!")
+
+
+if __name__ == "__main__":
+    app = create_app()
+    with app.app_context():
+        seed()
