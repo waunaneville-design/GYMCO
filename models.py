@@ -73,5 +73,19 @@ class Exercise(db.Model):
     def __repr__(self):
         return f"<Exercise {self.id}: {self.name} ({self.category})>"
 
+    class Workout(db.Model):
+     __tablename__ = "workouts"
+     __table_args__ = (
+    CheckConstraint(
+            "duration_minutes > 0 AND duration_minutes <= 300",
+            name="duration_minutes_range",
+        ),
 
+  CheckConstraint("notes IS NULL OR length(notes) <= 500", name="notes_length"),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False, default=date.today)
+    duration_minutes = db.Column(db.Integer, nullable=False)
+    notes = db.Column(db.Text)
 
