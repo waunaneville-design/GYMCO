@@ -46,3 +46,12 @@ class Exercise(db.Model):
         viewonly=True,
     )
 
+    @validates("name")
+    def validate_name(self, key, value):
+        if not value or not value.strip():
+            raise ValueError("Exercise name is required.")
+        value = value.strip()
+        if len(value) < 2:
+            raise ValueError("Exercise name must be at least 2 characters long.")
+        return value
+
