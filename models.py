@@ -17,6 +17,7 @@ db = SQLAlchemy(metadata=metadata)
 
 EXERCISE_CATEGORIES = ("strength", "cardio", "mobility", "balance", "core")
 
+
 class Exercise(db.Model):
     __tablename__ = "exercises"
     __table_args__ = (
@@ -27,7 +28,6 @@ class Exercise(db.Model):
             name="category_allowed",
         ),
     )
-
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False, unique=True)
@@ -65,23 +65,25 @@ class Exercise(db.Model):
                 f"Category must be one of: {', '.join(EXERCISE_CATEGORIES)}."
             )
         return value
+
     @validates("equipment_needed")
     def validate_equipment_needed(self, key, value):
         if not isinstance(value, bool):
             raise ValueError("equipment_needed must be a boolean.")
         return value
+
     def __repr__(self):
         return f"<Exercise {self.id}: {self.name} ({self.category})>"
 
-    class Workout(db.Model):
-     __tablename__ = "workouts"
-     __table_args__ = (
-    CheckConstraint(
+
+class Workout(db.Model):
+    __tablename__ = "workouts"
+    __table_args__ = (
+        CheckConstraint(
             "duration_minutes > 0 AND duration_minutes <= 300",
             name="duration_minutes_range",
         ),
-
-  CheckConstraint("notes IS NULL OR length(notes) <= 500", name="notes_length"),
+        CheckConstraint("notes IS NULL OR length(notes) <= 500", name="notes_length"),
     )
 
     id = db.Column(db.Integer, primary_key=True)
@@ -128,6 +130,7 @@ class Exercise(db.Model):
     def __repr__(self):
         return f"<Workout {self.id}: {self.date} ({self.duration_minutes} min)>"
 
+
 class WorkoutExercise(db.Model):
     __tablename__ = "workout_exercises"
     __table_args__ = (
@@ -145,6 +148,7 @@ class WorkoutExercise(db.Model):
             name="reps_sets_or_duration_required",
         ),
     )
+
     id = db.Column(db.Integer, primary_key=True)
     workout_id = db.Column(
         db.Integer, db.ForeignKey("workouts.id", ondelete="CASCADE"), nullable=False
@@ -156,8 +160,36 @@ class WorkoutExercise(db.Model):
     sets = db.Column(db.Integer)
     duration_seconds = db.Column(db.Integer)
 
-workout = db.relationship("Workout", back_populates="workout_exercises")
-exercise = db.relationship("Exercise", back_populates="workout_exercises")
+    workout = db.relationship("Workout", back_populates="workout_exercises")
+    exercise = db.relationship("Exercise", back_populates="workout_exercises")
+
+    @validates("reps", "sets", "duration_seconds")
+    def validate_positive_numbers(self, key, value):
+        if value is None:
+            return value
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise ValueError(f"{key} must be an integer.")
+        if value <= 0:
+            raise ValueError(f"{key} must be a positive integer.")
+        return value
+
+    def validate_effort(self):
+        """A WorkoutExercise must record either reps and sets, or a duration."""
+        has_reps_and_sets = self.reps is not None and self.sets is not None
+        if not has_reps_and_sets and self.duration_seconds is None:
+            raise ValueError(
+                "A workout exercise requires either reps and sets, "
+                "or duration_seconds."
+            )
+
+    def __repr__(self):
+        return (
+            f"<WorkoutExercise {self.id}: workout={self.workout_id} "
+            f"exercise={self.exercise_id}>"
+        )
 
 
-
+@event.listens_for(WorkoutExercise, "before_insert")
+@event.listens_for(WorkoutExercise, "before_update")
+def enforce_effort(mapper, connection, target):
+    target.validate_effort()
