@@ -75,3 +75,23 @@ def register_routes(app):
             return jsonify({"error": "Workout not found"}), 404
         return jsonify(workout_detail_schema.dump(workout)), 200
 
+    @app.post("/workouts")
+    def create_workout():
+        try:
+            data = workout_schema.load(request.get_json() or {})
+        except ValidationError as error:
+            return jsonify({"errors": error.messages}), 400
+
+        workout = Workout(**data)
+        try:
+            db.session.add(workout)
+            db.session.commit()
+        except ValueError as error:
+            db.session.rollback()
+            return jsonify({"errors": [str(error)]}), 400
+        except IntegrityError as error:
+            db.session.rollback()
+            return jsonify({"errors": [str(error.orig)]}), 400
+
+        return jsonify(workout_detail_schema.dump(workout)), 201
+
