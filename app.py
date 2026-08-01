@@ -168,3 +168,22 @@ def register_routes(app):
             workout_id=workout_id, exercise_id=exercise_id, **data
         )
 
+        try:
+            db.session.add(workout_exercise)
+            db.session.commit()
+        except ValueError as error:
+            db.session.rollback()
+            return jsonify({"errors": [str(error)]}), 400
+        except IntegrityError as error:
+            db.session.rollback()
+            return jsonify({"errors": [str(error.orig)]}), 400
+
+        return jsonify(workout_exercise_detail_schema.dump(workout_exercise)), 201
+
+
+app = create_app()
+
+
+if __name__ == "__main__":
+    app.run(port=5555, debug=True)
+
