@@ -89,3 +89,14 @@ class Exercise(db.Model):
     duration_minutes = db.Column(db.Integer, nullable=False)
     notes = db.Column(db.Text)
 
+    workout_exercises = db.relationship(
+        "WorkoutExercise",
+        back_populates="workout",
+        cascade="all, delete-orphan",
+    )
+    exercises = db.relationship(
+        "Exercise",
+        secondary="workout_exercises",
+        back_populates="workouts",
+        viewonly=True,
+    )
