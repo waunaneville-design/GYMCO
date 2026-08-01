@@ -103,3 +103,17 @@ def register_routes(app):
         db.session.delete(workout)
         db.session.commit()
         return "", 204
+
+ # ----- Exercises -----
+
+    @app.get("/exercises")
+    def get_exercises():
+        exercises = Exercise.query.order_by(Exercise.name).all()
+        return jsonify(exercises_schema.dump(exercises)), 200
+
+    @app.get("/exercises/<int:id>")
+    def get_exercise(id):
+        exercise = db.session.get(Exercise, id)
+        if exercise is None:
+            return jsonify({"error": "Exercise not found"}), 404
+        return jsonify(exercise_detail_schema.dump(exercise)), 200
