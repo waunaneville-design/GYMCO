@@ -125,3 +125,16 @@ def register_routes(app):
         except ValidationError as error:
             return jsonify({"errors": error.messages}), 400
 
+        exercise = Exercise(**data)
+        try:
+            db.session.add(exercise)
+            db.session.commit()
+        except ValueError as error:
+            db.session.rollback()
+            return jsonify({"errors": [str(error)]}), 400
+        except IntegrityError as error:
+            db.session.rollback()
+            return jsonify({"errors": [str(error.orig)]}), 400
+
+        return jsonify(exercise_detail_schema.dump(exercise)), 201
+
