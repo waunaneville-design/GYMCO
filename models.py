@@ -55,3 +55,13 @@ class Exercise(db.Model):
             raise ValueError("Exercise name must be at least 2 characters long.")
         return value
 
+    @validates("category")
+    def validate_category(self, key, value):
+        if not value:
+            raise ValueError("Exercise category is required.")
+        value = value.strip().lower()
+        if value not in EXERCISE_CATEGORIES:
+            raise ValueError(
+                f"Category must be one of: {', '.join(EXERCISE_CATEGORIES)}."
+            )
+        return value
