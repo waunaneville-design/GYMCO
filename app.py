@@ -56,4 +56,9 @@ def register_error_handlers(app):
     def handle_method_not_allowed(error):
         return jsonify({"error": "Method not allowed"}), 405
 
+def register_routes(app):
+    @app.get("/")
+    def index():
+        return jsonify({"message": "GYMCO workout API"}), 200
+
 
