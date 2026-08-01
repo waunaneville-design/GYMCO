@@ -61,4 +61,17 @@ def register_routes(app):
     def index():
         return jsonify({"message": "GYMCO workout API"}), 200
 
+ # ----- Workouts -----
+
+    @app.get("/workouts")
+    def get_workouts():
+        workouts = Workout.query.order_by(Workout.date.desc()).all()
+        return jsonify(workouts_schema.dump(workouts)), 200
+
+    @app.get("/workouts/<int:id>")
+    def get_workout(id):
+        workout = db.session.get(Workout, id)
+        if workout is None:
+            return jsonify({"error": "Workout not found"}), 404
+        return jsonify(workout_detail_schema.dump(workout)), 200
 
