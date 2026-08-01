@@ -38,3 +38,8 @@ def create_app(config_class=Config):
             "Workout": Workout,
             "WorkoutExercise": WorkoutExercise,
         }
+
+    register_routes(app)
+    register_error_handlers(app)
+    return app
+
