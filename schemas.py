@@ -43,3 +43,9 @@ class WorkoutSchema(SQLAlchemyAutoSchema):
         allow_none=True, load_default=None, validate=validate.Length(max=500)
     )
 
+    @validates("date")
+    def validate_date(self, value, **kwargs):
+        if value > date.today():
+            raise ValidationError("Workout date cannot be in the future.")
+
+
