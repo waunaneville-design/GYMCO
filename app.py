@@ -154,3 +154,8 @@ def register_routes(app):
         workout = db.session.get(Workout, workout_id)
         if workout is None:
             return jsonify({"error": "Workout not found"}), 404
+
+        exercise = db.session.get(Exercise, exercise_id)
+        if exercise is None:
+            return jsonify({"error": "Exercise not found"}), 404
+
