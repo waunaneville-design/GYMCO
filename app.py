@@ -159,3 +159,12 @@ def register_routes(app):
         if exercise is None:
             return jsonify({"error": "Exercise not found"}), 404
 
+        try:
+            data = workout_exercise_schema.load(request.get_json() or {})
+        except ValidationError as error:
+            return jsonify({"errors": error.messages}), 400
+
+        workout_exercise = WorkoutExercise(
+            workout_id=workout_id, exercise_id=exercise_id, **data
+        )
+
