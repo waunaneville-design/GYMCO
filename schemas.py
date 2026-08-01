@@ -63,4 +63,11 @@ class WorkoutExerciseSchema(SQLAlchemyAutoSchema):
     duration_seconds = fields.Integer(
         allow_none=True, load_default=None, validate=validate.Range(min=1)
     )
+    @validates_schema
+    def validate_effort(self, data, **kwargs):
+        has_reps_and_sets = data.get("reps") is not None and data.get("sets") is not None
+        if not has_reps_and_sets and data.get("duration_seconds") is None:
+            raise ValidationError(
+                "Provide either both reps and sets, or duration_seconds.",
+                "reps",
 
