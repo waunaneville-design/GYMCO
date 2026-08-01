@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import CheckConstraint, MetaData, UniqueConstraint, event
 from sqlalchemy.orm import validates
 
+
 metadata = MetaData(
     naming_convention={
         "ix": "ix_%(column_0_label)s",
