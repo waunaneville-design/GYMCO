@@ -138,3 +138,11 @@ def register_routes(app):
 
         return jsonify(exercise_detail_schema.dump(exercise)), 201
 
+    @app.delete("/exercises/<int:id>")
+    def delete_exercise(id):
+        exercise = db.session.get(Exercise, id)
+        if exercise is None:
+            return jsonify({"error": "Exercise not found"}), 404
+        db.session.delete(exercise)
+        db.session.commit()
+        return "", 204
