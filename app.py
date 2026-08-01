@@ -48,6 +48,12 @@ def register_error_handlers(app):
     def handle_validation_error(error):
         return jsonify({"errors": error.messages}), 400
 
- @app.errorhandler(404)
+    @app.errorhandler(404)
     def handle_not_found(error):
         return jsonify({"error": "Resource not found"}), 404
+
+    @app.errorhandler(405)
+    def handle_method_not_allowed(error):
+        return jsonify({"error": "Method not allowed"}), 405
+
+
