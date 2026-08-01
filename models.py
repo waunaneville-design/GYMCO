@@ -70,4 +70,8 @@ class Exercise(db.Model):
         if not isinstance(value, bool):
             raise ValueError("equipment_needed must be a boolean.")
         return value
+    def __repr__(self):
+        return f"<Exercise {self.id}: {self.name} ({self.category})>"
+
+
 
