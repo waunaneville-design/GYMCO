@@ -100,3 +100,12 @@ class Exercise(db.Model):
         back_populates="workouts",
         viewonly=True,
     )
+
+    @validates("date")
+    def validate_date(self, key, value):
+        if value is None:
+            raise ValueError("Workout date is required.")
+        if value > date.today():
+            raise ValueError("Workout date cannot be in the future.")
+        return value
+
