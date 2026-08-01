@@ -65,3 +65,9 @@ class Exercise(db.Model):
                 f"Category must be one of: {', '.join(EXERCISE_CATEGORIES)}."
             )
         return value
+    @validates("equipment_needed")
+    def validate_equipment_needed(self, key, value):
+        if not isinstance(value, bool):
+            raise ValueError("equipment_needed must be a boolean.")
+        return value
+
